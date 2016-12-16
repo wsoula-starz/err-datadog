@@ -1,0 +1,13 @@
+[Core]
+name = datadog
+module = datadog
+
+[Documentation]
+description = DataDog Errbot Script
+
+[Python]
+version = 3
+
+[Errbot]
+max = 4.3.4
+
