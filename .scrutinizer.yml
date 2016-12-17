@@ -1,0 +1,32 @@
+checks:
+    python:
+        code_rating: true
+        duplicate_code: true
+        variables_used_before_assignment: true
+        variables_unused_variable: true
+        variables_unpacking_non_sequence: true
+        variables_undefined_loop_variable: true
+        variables_undefined_all_variable: true
+        variables_undefined_variable: true
+        variables_redefined_builtin: true
+        variables_global_at_module_level: true
+        logging_not_lazy: true
+        variables_unbalanced_tuple_unpacking: true
+        variables_redefined_outer_name: true
+        variables_no_name_in_module: true
+        typecheck_too_many_function_args: true
+        typecheck_no_value_for_parameter: true
+        string_constant_anomalous_unicode_escape_in_string: true
+        open_mode_bad_open_mode: true
+        logging_too_many_args: true
+        exceptions_raising_non_exception: true
+        exceptions_catching_non_exception: true
+        basic_useless_else_on_loop: true
+        classes_access_member_before_definition: true
+        basic_eval_used: true
+        basic_dangerous_default_value: true
+
+filter:
+    excluded_paths:
+        - '*/test/*'
+build: true
