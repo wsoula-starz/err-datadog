@@ -117,7 +117,7 @@ def ez_hdd_graph(hostname):
     return graph_def.replace("REPLACEME", hostname)
 
 
-class datadog(BotPlugin):
+class errdatadog(BotPlugin):
     """
     DataDog Snapshot
     """
@@ -143,7 +143,7 @@ class datadog(BotPlugin):
                 break
 
         if name_already_exists:
-            return False # no change made as it already exists
+            return False  # no change made as it already exists
         else:
             # grab the current store
             list_of_saved_queries = self['QUERY_STORE']
@@ -159,7 +159,7 @@ class datadog(BotPlugin):
             # http://errbot.io/en/latest/user_guide/plugin_development/persistence.html
             self['QUERY_STORE'] = list_of_saved_queries
 
-            return True # change made
+            return True  # change made
 
     def delete_from_querystore(self, name):
         """
@@ -216,15 +216,19 @@ class datadog(BotPlugin):
         Search DataDog inventory for hosts
         """
 
-        initialize_datadog_api(self.config['DATADOG_API_KEY'],
-                               self.config['DATADOG_APP_KEY'])
+        initialize_datadog_api(
+            self.config['DATADOG_API_KEY'],
+            self.config['DATADOG_APP_KEY']
+        )
 
         # need to search for what the user asked in upper and lower case
         # the datadog api is case sensitive
         search_string_lower = "hosts:{hostname}".format(
-            hostname=str.lower(hostname))
+            hostname=str.lower(hostname)
+        )
         search_string_upper = "hosts:{hostname}".format(
-            hostname=str.upper(hostname))
+            hostname=str.upper(hostname)
+        )
 
         response_lower = api.Infrastructure.search(q=search_string_lower)
         response_upper = api.Infrastructure.search(q=search_string_upper)
@@ -237,7 +241,7 @@ class datadog(BotPlugin):
     @arg_botcmd('metric_type', type=str)
     @arg_botcmd('hostname', type=str)
     @arg_botcmd('--hours', dest='hours', type=int, default=1)
-    def ddog_ezgraph(self, message, metric_type='cpu', hostname=None, hours=None):
+    def ddog_ezgraph(self, message, metric_type=None, hostname=None, hours=None):
         """
         A command to easily view common host based metrics
         """
@@ -247,7 +251,9 @@ class datadog(BotPlugin):
         # create fields key value pairs
         fields = {
             'Server Name': hostname,
-            'Time Window': "{hours}h".format(hours=hours)
+            'Time Window': "{hours}h".format(
+                hours=hours
+            )
         }
 
         if metric_type in valid_metrics:
@@ -267,10 +273,14 @@ class datadog(BotPlugin):
                 fields['Measurement'] = "Percentage Used (%)"
 
             else:
-                return "Haven't done {name} yet".format(name=metric_type)
+                return "Haven't done {name} yet".format(
+                    name=metric_type
+                )
 
-            initialize_datadog_api(self.config['DATADOG_API_KEY'],
-                                   self.config['DATADOG_APP_KEY'])
+            initialize_datadog_api(
+                self.config['DATADOG_API_KEY'],
+                self.config['DATADOG_APP_KEY']
+            )
 
             # setup some timestamps for the graph
             end = int(time.time())
@@ -296,20 +306,28 @@ class datadog(BotPlugin):
         """
 
         if ":" in query:
-            initialize_datadog_api(self.config['DATADOG_API_KEY'],
-                                self.config['DATADOG_APP_KEY'])
+            initialize_datadog_api(
+                self.config['DATADOG_API_KEY'],
+                self.config['DATADOG_APP_KEY']
+            )
 
             # setup some timestamps for the graph
             end = int(time.time())
             start = end - (hours * 60 * 60)
 
             # grab the json result
-            snap = api.Graph.create(metric_query=query, start=start, end=end)
+            snap = api.Graph.create(
+                metric_query=query,
+                start=start,
+                end=end
+            )
 
             send_datadog_style_attachment(
                 self, message, snap['snapshot_url'])
         else:
-            yield "Hrmm `{query}` doesn't look like a DataDog query string. Maybe you need to use the **get** command".format(query=query)
+            yield "Hrmm `{query}` doesn't look like a DataDog query string. Maybe you need to use the **get** command".format(
+                query=query
+            )
 
     @botcmd(template="list")
     def ddog_list(self, message, args):
@@ -317,7 +335,7 @@ class datadog(BotPlugin):
         List saved DataDog queries
         """
 
-        return { 'saves': self['QUERY_STORE'] }
+        return {'saves': self['QUERY_STORE']}
 
     @arg_botcmd('name', type=str)
     def ddog_delete(self, message, name=None):
@@ -328,10 +346,13 @@ class datadog(BotPlugin):
         result = self.delete_from_querystore(name)
 
         if result:
-            yield "Annnnd its gone. `{name}` was deleted :+1:".format(name=name)
+            yield "Annnnd its gone. `{name}` was deleted :+1:".format(
+                name=name
+            )
         else:
-            yield "The query `{name}` was not in the list to delete.".format(name=name)
-
+            yield "The query `{name}` was not in the list to delete.".format(
+                name=name
+            )
 
     @arg_botcmd('query', type=str)
     @arg_botcmd('name', type=str)
@@ -347,13 +368,17 @@ class datadog(BotPlugin):
             result = self.add_to_querystore(name, query, hours)
 
             if result:
-                yield ":white_check_mark: The graph `{name}` has been saved".format(name=name)
+                yield ":white_check_mark: The graph `{name}` has been saved".format(
+                    name=name
+                )
             else:
-                yield ":no_entry: The graph `{name}` already exists as a saved query".format(name=name)
+                yield ":no_entry: The graph `{name}` already exists as a saved query".format(
+                    name=name
+                )
         else:
-            yield "Hrmm `{query}` doesn't look like a DataDog query string. I'm not going to save that one".format(query=query)
-
-
+            yield "Hrmm `{query}` doesn't look like a DataDog query string. I'm not going to save that one".format(
+                query=query
+            )
 
     @arg_botcmd('name', type=str)
     # not setting a default so it uses the saved timestamp while allowing for
@@ -367,8 +392,10 @@ class datadog(BotPlugin):
         saved_query = self.get_from_querystore(name)
 
         if saved_query:
-            initialize_datadog_api(self.config['DATADOG_API_KEY'],
-                                   self.config['DATADOG_APP_KEY'])
+            initialize_datadog_api(
+                self.config['DATADOG_API_KEY'],
+                self.config['DATADOG_APP_KEY']
+            )
 
             # if hours isn't set, used the saved hours from the user
             if not hours:
@@ -380,15 +407,25 @@ class datadog(BotPlugin):
 
             fields = {
                 'Saved Query Name': name,
-                'Time Window': "{hours}h".format(hours=hours)
+                'Time Window': "{hours}h".format(
+                    hours=hours
+                )
             }
 
-            yield "Running saved query `{query}`".format(query=saved_query['query'])
+            yield "Running saved query `{query}`".format(
+                query=saved_query['query']
+            )
 
             # grab the json result
-            snap = api.Graph.create(metric_query=saved_query['query'], start=start, end=end)
+            snap = api.Graph.create(
+                metric_query=saved_query['query'],
+                start=start,
+                end=end
+            )
 
             send_datadog_style_attachment(
                 self, message, snap['snapshot_url'], fields)
         else:
-            yield ":no_entry: The saved query {name} does not exist".format(name=name)
+            yield ":no_entry: The saved query {name} does not exist".format(
+                name=name
+            )

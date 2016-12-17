@@ -1,6 +1,6 @@
 [Core]
-name = datadog
-module = datadog
+name = errdatadog
+module = errdatadog
 
 [Documentation]
 description = DataDog Errbot Script
