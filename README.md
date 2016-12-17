@@ -1,6 +1,6 @@
 # DataDog plugin for Errbot
 
-Factoid is a plugin for [Errbot](http://errbot.io), a Python-based chat bot.
+Datadog is a plugin for [Errbot](http://errbot.io), a Python-based chat bot.
 
 It allows chat users query DataDog graphs.
 
