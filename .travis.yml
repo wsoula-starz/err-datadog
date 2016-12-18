@@ -2,9 +2,11 @@ language: python
 python:
   - 3.5
 install:
-  - pip install -q tox --use-wheel
+  - pip install -q err pytest pytest-pep8 --use-wheel
   - pip install -q coverage --use-wheel
 script:
-  - tox
+  - coverage run --source ddog -m py.test --pep8
+after_success:
+  - coveralls
 notifications:
   email: false
