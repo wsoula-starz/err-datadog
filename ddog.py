@@ -117,22 +117,29 @@ def ez_hdd_graph(hostname):
     return graph_def.replace("REPLACEME", hostname)
 
 
-class datadog(BotPlugin):
+class ddog(BotPlugin):
     """
     DataDog Snapshot
     """
+
+    def initialize_querystore(self):
+        """
+        Creates empty QUERYSTORE if it doesn't exist
+        """
+
+        # make an array if it doesn't exist
+        if 'QUERY_STORE' not in self:
+            self['QUERY_STORE'] = []
 
     def add_to_querystore(self, name, query, hours):
         """
         Add an item to QUERYSTORE
         """
 
+        self.initialize_querystore()
+
         # lowercase the name
         name = str.lower(name)
-
-        # make an array if it doesn't exist
-        if 'QUERY_STORE' not in self:
-            self['QUERY_STORE'] = []
 
         name_already_exists = False
 
@@ -163,8 +170,10 @@ class datadog(BotPlugin):
 
     def delete_from_querystore(self, name):
         """
-        Add an item to QUERYSTORE
+        Delete an item from QUERYSTORE
         """
+
+        self.initialize_querystore()
 
         temp_list = []
 
@@ -186,6 +195,8 @@ class datadog(BotPlugin):
         """
         Get an item from QUERYSTORE
         """
+
+        self.initialize_querystore()
 
         # lowercase the name
         name = str.lower(name)
@@ -316,6 +327,8 @@ class datadog(BotPlugin):
         """
         List saved DataDog queries
         """
+
+        self.initialize_querystore()
 
         return { 'saves': self['QUERY_STORE'] }
 
