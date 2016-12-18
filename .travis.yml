@@ -2,9 +2,8 @@ language: python
 python:
   - 3.5
 install:
-  - pip install -q pytest pytest-pep8 --use-wheel
+  - pip install -q pytest pytest-pep8 errbot coverage --use-wheel
   - pip install -r requirements.txt --use-wheel
-  - pip install -q coverage --use-wheel
 script:
   - coverage run --source ddog -m py.test --pep8
 after_success:
