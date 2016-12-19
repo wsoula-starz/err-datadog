@@ -1,5 +1,7 @@
 # DataDog plugin for Errbot
 
+[![Build Status](https://travis-ci.org/MattHodge/err-datadog.svg?branch=master)](https://travis-ci.org/MattHodge/err-datadog)
+
 Datadog is a plugin for [Errbot](http://errbot.io), a Python-based chat bot.
 
 It allows chat users query DataDog graphs.
