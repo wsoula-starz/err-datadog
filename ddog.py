@@ -1,5 +1,5 @@
 from errbot import BotPlugin, botcmd, arg_botcmd, webhook, templating
-from errbot.utils import ValidationException
+#from errbot.utils import ValidationException
 from datadog import initialize, api
 import time
 import json
@@ -219,7 +219,7 @@ class ddog(BotPlugin):
     def check_configuration(self, config):
         for key in ['DATADOG_API_KEY', 'DATADOG_APP_KEY']:
             if key not in config:
-                raise ValidationException("missing config value: " + key)
+                raise Exception("missing config value: " + key)
 
     @arg_botcmd('hostname', type=str, template="search")
     def ddog_search(self, message, hostname=None):
